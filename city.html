@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"/><meta name="viewport"content="width=device-width,initial-scale=1"/><link rel="stylesheet" href="styles.css" /></head>
+<body>
+  <header><a href="index.html">← Back</a></header>
+  <main id="root"></main>
+  <script>
+    const params = Object.fromEntries(new URLSearchParams(location.search));
+    const API = 'https://script.google.com/macros/s/YOUR_DEPLOY_ID/exec';
+    async function apiGET(q){ return fetch(API+'?'+new URLSearchParams(q)).then(r=>r.json()); }
+    async function load(){
+      if(!params.city||!params.place) { document.body.innerHTML='Missing params'; return; }
+      const res = await apiGET({ action:'getCity', city:params.city });
+      const place = (res.places||[]).find(p=>p.id===params.place);
+      if(!place) { document.getElementById('root').innerText='Place not found'; return; }
+      document.getElementById('root').innerHTML = `
+        <div class="card"><h2>${place.name}</h2>
+        <img src="${place.images?.[0]||'https://via.placeholder.com/600x300'}"/>
+        <div id="infos"></div>
+        <div style="margin-top:10px"><button id="add">+ Add Info</button></div></div>`;
+      const infosDiv = document.getElementById('infos');
+      (place.infos||[]).forEach(i=>{
+        infosDiv.innerHTML += `<div class="person"><div class="meta"><strong>${i.user}</strong><div class="small">${i.text}</div></div></div>`;
+      });
+      document.getElementById('add').onclick = async ()=>{
+        const user=prompt('Name')||'Anonymous', text=prompt('Info');
+        if(!text) return;
+        await fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'addInfo', city:params.city, place:params.place, user, text })});
+        location.reload();
+      };
+    }
+    load();
+  </script>
+</body>
+</html>
