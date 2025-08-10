@@ -1,40 +1,35 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Submit Name</title>
-<style>
-  body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:#f3f4f6;display:flex;align-items:center;justify-content:center;min-height:100vh}
-  .card{background:#fff;padding:18px;border-radius:8px;box-shadow:0 6px 18px rgba(15,23,42,.06);width:320px}
-  input,button{width:100%;padding:10px;border-radius:6px;border:1px solid #e5e7eb}
-  button{background:#0ea5a4;color:#fff;border:none;margin-top:8px;cursor:pointer}
-  #msg{margin-top:10px;text-align:center;font-size:14px}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Japan City Guide</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
-<div class="card">
-  <h3 style="margin:0 0 10px">Enter your name</h3>
-  <form id="f">
-    <input id="n" name="name" placeholder="Your name" required />
-    <button type="submit">Submit</button>
-  </form>
-  <div id="msg"></div>
-</div>
-<script>
-const URL = "https://script.google.com/macros/s/AKfycbwN_nMiko5uxACzViEHs9kvvOmjreVkZO8E54rjdte7yHWMPRwQrgpqTFdAPO6jMFYW/exec"; // <-- replace
-const f = document.getElementById("f"), n = document.getElementById("n"), msg = document.getElementById("msg");
-f.addEventListener("submit", async e => {
-  e.preventDefault();
-  msg.textContent = "⏳ Saving...";
-  try {
-    const r = await fetch(URL, { method: "POST", body: new URLSearchParams({ name: n.value }) });
-    const text = await r.text();
-    msg.textContent = text;
-    n.value = "";
-  } catch (err) {
-    msg.textContent = "❌ Network error";
-  }
-});
-</script>
+  <header><h1>Japan City Guide</h1></header>
+  <nav id="cityTabs" class="tabs"></nav>
+  <main>
+    <section id="mapWrap">
+      <div id="map"></div>
+    </section>
+
+    <section id="cards" class="cards"></section>
+  </main>
+
+  <!-- small modal for adding info -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <button id="closeModal" class="close">✕</button>
+      <h3 id="modalTitle"></h3>
+      <input id="userName" placeholder="Your name" />
+      <textarea id="infoText" placeholder="Add info..."></textarea>
+      <button id="saveInfo">Save</button>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>
