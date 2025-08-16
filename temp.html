@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tokyo Places Map (English)</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    #map { height: 100vh; margin: 0; }
+    .emoji-marker {
+      font-size: 22px;
+      text-align: center;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    #map { height: 100vh; margin: 0; }
+    .marker-label {
+        background-color: rgba(0, 0, 0, 0.6); /* semi-transparent black */
+        color: #fff;                          /* white text */
+        padding: 2px 6px;                     /* space around text */
+        border-radius: 4px;                   /* rounded corners */
+        text-shadow: 0 0 2px #000;            /* subtle shadow for readability */
+        font-size: 13px;                       /* slightly larger for readability */
+        display: inline-block;
+        }
+    </style>
+  <script>
+    const map = L.map('map').setView([35.68, 139.76], 11);
+    const URL = "https://script.google.com/macros/s/AKfycbyrIG8t9W8Tlbzsw-kxQYMMdwMKZcB0fhVamNoGx7c3D4jTFg67XVt-wwwFcjgmY1Us/exec"; // <-- replace
+    async function getKey() {
+        const response = await fetch(URL);
+        const data = await response.json();
+        return data.key;
+    }
+    getKey().then(key => {
+        L.tileLayer(`https://api.maptiler.com/maps/bright/{z}/{x}/{y}.png?key=${key}`, {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/">OSM</a> contributors &copy; <a href="https://www.maptiler.com/">MapTiler</a>',
+            maxZoom: 20
+        }).addTo(map);
+    });
+
+    const typeIcons = {
+      temple: "⛩️",
+      park: "🌳",
+      museum: "🏛️",
+      restaurant: "🍜",
+      shop: "🛍️",
+      default: "📍"
+    };
+
+    const createEmojiIcon = (type, name) => L.divIcon({
+      className: "emoji-marker",
+      html: `${typeIcons[type?.toLowerCase()] || typeIcons.default}<br><span class="marker-label">${name}</span>`,
+      iconSize: [40, 40],
+      iconAnchor: [20, 40]
+    });
+
+    Papa.parse("data/Tokyo.csv", {
+      download: true,
+      header: true,
+      complete: results => {
+        results.data.forEach(place => {
+          if (place.lat && place.long) {
+            L.marker([+place.lat, +place.long], { icon: createEmojiIcon(place.type, place.name) })
+              .addTo(map)
+              .bindPopup(`<b>${place.name}</b><br>Type: ${place.type}`);
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
