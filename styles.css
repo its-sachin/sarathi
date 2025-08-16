@@ -35,7 +35,7 @@ body {
   flex: 1;
   margin: 0 0.2rem;
   padding: 0.8rem 0;
-  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-size: clamp(1.5rem, 4vw, 1.8rem);
   color: white;
   background: var(--primary-color);
   border:rgba(0, 0, 0, 0.3) solid 0px;
@@ -164,7 +164,7 @@ form button:hover {
 }
 
 .card {
-  width: 300px;
+  width: 280px;
   border: 1px solid #ddd;
   border-radius: 8px;
   overflow: hidden;
@@ -180,7 +180,7 @@ form button:hover {
 }
 .card h3 {
   margin: 10px 0;
-  font-size: clamp(10px, 4vw, 18px); /* automatically scales with container width */
+  font-size: clamp(8px, 4vw, 15px); /* automatically scales with container width */
   line-height: 1.2;
   white-space: nowrap;                /* prevents wrapping */
   overflow: hidden;                   /* hide overflow */
