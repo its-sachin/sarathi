@@ -21,7 +21,7 @@ const cityCenters = {
 // Reusable function to create emoji markers
 const createEmojiIcon = (type, name) => L.divIcon({
   className: "emoji-marker",
-  html: `${typeIcons[type?.toLowerCase()] || typeIcons.default}<br><span class="marker-label">${name}</span>`,
+  html: `${typeIcons[type.trim()] || typeIcons.Other}<br><span class="marker-label">${name}</span>`,
   iconSize: [40, 40], iconAnchor: [20, 40]
 });
 
@@ -30,12 +30,9 @@ async function initMap(city,  zoom=11) {
   const center = cityCenters[city] || [35.68, 139.76]; // fallback
   if (!map) map = L.map('map');
   map = map.setView(center, zoom);
-  console.log(map);
 
   const key = await fetch(URL)
                   .then(r => r.json()).then(d => d.key);
-
-  console.log(`Using MapTiler key: ${key}`);
 
   L.tileLayer(`https://api.maptiler.com/maps/bright/{z}/{x}/{y}.png?key=${key}`, {
     attribution: '&copy; <a href="https://www.openstreetmap.org/">OSM</a> contributors &copy; <a href="https://www.maptiler.com/">MapTiler</a>',
