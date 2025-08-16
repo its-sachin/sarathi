@@ -140,3 +140,78 @@ form button:hover {
 .card h3 {
   margin: 10px 0;
 }
+
+
+/* Container for all cards */
+.infoCardsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+/* Individual card */
+.infoCard {
+  position: relative;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  width: 220px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 255, 255, 0.2);
+  padding: 25px 15px 15px 15px;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: visible;
+  margin-top: 40px; /* prevents circle overlap with previous card */
+  transition: transform 0.2s;
+  z-index: 0;
+}
+.infoCard:hover { transform: translateY(-5px); }
+
+/* Circle badge for user */
+.infoCard .userBadge {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0ff, #08f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  border: 2px solid rgba(255,255,255,0.2);
+  box-shadow: 0 0 10px #0ff;
+  z-index: 1;
+}
+
+/* Title bar */
+.infoCard .titleBar {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 10px;
+  padding-left: 40px; /* avoids circle overlap */
+  text-shadow: 0 0 4px #0ff;
+}
+
+/* List styling */
+.infoCard ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+.infoCard ul li {
+  position: relative;
+  padding-left: 15px;
+  margin: 6px 0;
+  font-size: 13px;
+  color: #c0f0f0;
+}
+.infoCard ul li::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  color: #0ff;
+  text-shadow: 0 0 3px #0ff;
+}

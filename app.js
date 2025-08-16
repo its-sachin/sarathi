@@ -26,9 +26,9 @@ const createEmojiIcon = (type, name) => L.divIcon({
 });
 
 // Initialize or update map for a city
-async function initMap(city,  zoom=11) {
+async function initMap(city, rows, zoom=11) {
   const center = cityCenters[city] || [35.68, 139.76]; // fallback
-  if (!map) map = L.map('map');
+  map = L.map('map');
   map = map.setView(center, zoom);
 
   const key = await fetch(URL)
@@ -42,9 +42,6 @@ async function initMap(city,  zoom=11) {
   // Clear existing markers
   map.eachLayer(l => l instanceof L.Marker && map.removeLayer(l));
 
-  // Load city data
-  const data = await fetch(`data/${city}.csv`).then(r => r.text());
-  const rows = data.trim().split('\n').slice(1).map(l => l.split(','));
   rows.forEach(([name,lat,long,type]) => {
     if (lat && long) L.marker([+lat, +long], { icon: createEmojiIcon(type, name) })
       .addTo(map)
@@ -55,10 +52,9 @@ async function initMap(city,  zoom=11) {
 
 async function showTab(c) {
   city = c;
-  const r = await fetch(`data/${c}.csv`);
+  const r = await fetch(`data/${c}/${c}.csv`);
   const t = await r.text();
   const rows = t.trim().split('\n').slice(1).map(l => l.split(','));
-  const ul = rows.map(x => `<li>${x[0]} (${x[3]})</li>`).join('');
   const opts = Object.keys(typeIcons)
     .map(v => `<option value="${v}">${typeIcons[v]} ${v}</option>`)
     .join('');
@@ -71,29 +67,86 @@ async function showTab(c) {
        <select id=type required><option value="">Type</option>${opts}</select>
        <button>Add</button>
      </form>
-     <div id="msgBox"><span id=msg></span></div>`; // message area stays below
+     <div id="msgBox"><span id=msg></span></div>
+     <div id="map-container">
+      <div id="map"></div>
+    </div>
+    <div id="cardsContainer"></div>
+    `; // message area stays below
 
   document.getElementById("placeForm").onsubmit = savePlace;
   // Initialize map after container is ready
-  await initMap(city);
+  initMap(city, rows);
   const container = document.getElementById("cardsContainer");
   container.innerHTML = "";
   for (const row of rows) {
     const name = row[0];
     const img = document.createElement("img");
-    img.src = await getWikimediaImage(name);
+
+    const res = await (await fetch(`data/${city}/${name}.json`)).json();
+    img.src = res["link"];
+
     const card = document.createElement("div");
+    card.className = "card";
+    card.style.cursor = "pointer";
+
     card.className = "card";
     card.append(img, Object.assign(document.createElement("h4"), {textContent: name}));
     container.appendChild(card);
+
+    card.addEventListener("click", () => showPlace(name, city, res));
   }
 }
 
-async function getWikimediaImage(name) {
-  const url = `https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=${encodeURIComponent(name)}&prop=pageimages&format=json&pithumbsize=300`;
-  const data = await (await fetch(url)).json();
-  const page = Object.values(data.query.pages)[0];
-  return page?.thumbnail?.source || "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg";
+async function showPlace(placeName, city, placeData=undefined) {
+  try {
+    if (!placeData) {
+      const res = await fetch(`data/${city}/${placeName}.json`);
+      if (!res.ok) throw new Error(`Failed to fetch data for ${placeName}`);
+      placeData = await res.json();
+    }
+    const container = document.getElementById("cityTabs");
+    container.innerHTML = `
+      <h2>${placeName}</h2>
+      <img src="${placeData['link']}" style="max-width:400px; display:block; margin:10px 0;">
+      <div class="infoCardsContainer">
+        ${Object.entries(placeData['content']).map(([user, items]) => `
+          <div class="infoCard">
+            <div class="userBadge">${getUserEmoji(user)}</div>
+            <div class="titleBar">${user}</div><div id="savemsg"></div>
+            <div style="display:flex; align-items:center; margin-bottom:10px;">
+              <input type="text" 
+                placeholder="Add info..." 
+                id="addInfoInput-${user}" 
+                style="flex:1; padding:4px 8px;" 
+              />
+              <button 
+                style="margin-left:4px; font-size:18px; padding:2px 8px;" 
+                onclick="addUserInfo('${user}', '${city}', '${placeName}')"
+                title="Add"
+              >+</button>
+            </div>
+            <ul>
+              ${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>No info yet</li>'}
+            </ul>
+          </div>
+        `).join('')}
+      </div>
+      <div id="msg"></div>
+    `;
+  } catch (err) {
+    alert(`Could not load data for ${placeName}: ${err}`);
+  }
+}
+/* Map user names to emojis */
+function getUserEmoji(user) {
+  const map = {
+    "Sachin": "😎",
+    "Neeraja": "🤓",
+    "Dheeraj": "🧐",
+    "Dyuti": "😇"
+  };
+  return map[user] || "👤";
 }
 
 async function savePlace(e) {
@@ -124,5 +177,34 @@ async function savePlace(e) {
   }
 }
 
-showTab(city);
+// Add this helper function once in your JS
+async function addUserInfo(user, city, place) {
+  const input = document.getElementById(`addInfoInput-${user}`);
+  const info = input.value.trim();
+  if (!info) return;
+  input.value = "";
 
+  document.getElementById("savemsg").textContent = "⏳ Saving...";
+  try {
+    // Replace URL with your backend endpoint
+    const r = await fetch(URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        action: "addInfo",
+        city,
+        place,
+        info,
+        user,
+      })
+    });
+    document.getElementById("savemsg").textContent = await r.text();
+    await new Promise(res => setTimeout(res, 500));
+    showPlace(place, city);
+    // document.getElementById("msg").textContent = "";
+  } catch (e) {
+    document.getElementById("savemsg").textContent = "❌ Network error";
+  }
+}
+
+showTab(city); // Initialize with default city
