@@ -1,15 +1,15 @@
 const URL = "https://script.google.com/macros/s/AKfycbyrIG8t9W8Tlbzsw-kxQYMMdwMKZcB0fhVamNoGx7c3D4jTFg67XVt-wwwFcjgmY1Us/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
-let types = ["Restaurant", "Temple", "Park", "Museum"];
 
 let map; // global map reference
 const typeIcons = {
-  temple: "⛩️", 
-  park: "🌳", 
-  museum: "🏛️",
-  restaurant: "🍜", 
-  shop: "🛍️",
-  default: "📍"
+  Shrine: "⛩️", 
+  Park: "🌳", 
+  Museum: "🏛️",
+  Restaurant: "🍽️", 
+  Shop: "🛍️",
+  Other: "📍",
+  Street: "🚶"
 };
 
 const cityCenters = {
@@ -62,7 +62,7 @@ async function showTab(c) {
   const t = await r.text();
   const rows = t.trim().split('\n').slice(1).map(l => l.split(','));
   const ul = rows.map(x => `<li>${x[0]} (${x[3]})</li>`).join('');
-  const opts = types.map(v=>`<option>${v}</option>`).join('');
+  const opts = Object.keys(typeIcons).map(v=>`<option>${v}</option>`).join('');
 
   document.getElementById("cityTabs").innerHTML =
     `<h2>${c}</h2>
