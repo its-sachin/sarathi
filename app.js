@@ -62,7 +62,10 @@ async function showTab(c) {
   const t = await r.text();
   const rows = t.trim().split('\n').slice(1).map(l => l.split(','));
   const ul = rows.map(x => `<li>${x[0]} (${x[3]})</li>`).join('');
-  const opts = Object.keys(typeIcons).map(v=>`<option>${v}</option>`).join('');
+  const opts = Object.keys(typeIcons)
+    .map(v => `<option value="${v}">${typeIcons[v]} ${v}</option>`)
+    .join('');
+
 
   document.getElementById("cityTabs").innerHTML =
     `<h2>${c}</h2>
