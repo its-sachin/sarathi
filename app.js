@@ -60,7 +60,12 @@ async function showTab(c) {
   city = c;
   const r = await fetch(`data/${c}/${c}.csv`);
   const t = await r.text();
-  const rows = t.trim().split('\n').slice(1).map(l => l.split(','));
+  const rows = t
+    .trim()
+    .split('\n')
+    .slice(1)
+    .filter(l => l.trim().length > 0) // skip empty rows
+    .map(l => l.split(','));
   const opts = Object.keys(typeIcons)
     .map(v => `<option value="${v}">${typeIcons[v]} ${v}</option>`)
     .join('');
