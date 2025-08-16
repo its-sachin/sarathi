@@ -7,17 +7,19 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 </head>
 <body>
-  <h1>Japan City Maps</h1>
+  <!-- <h1>Japan City Maps</h1> -->
   <div class="tabs">
-    <button onclick="showTab('Tokyo')">Tokyo</button>
-    <button onclick="showTab('Osaka')">Osaka</button>
-    <button onclick="showTab('Kyoto')">Kyoto</button>
+    <button class="city-btn" onclick="showTab('Tokyo')">Tokyo</button>
+    <button class="city-btn" onclick="showTab('Osaka')">Osaka</button>
+    <button class="city-btn" onclick="showTab('Kyoto')">Kyoto</button>
   </div>
 
   <div id="cityTabs"></div>
   <div id="map-container">
     <div id="map"></div>
   </div>
+
+  <div id="cardsContainer"></div>
 
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

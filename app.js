@@ -66,17 +66,34 @@ async function showTab(c) {
 
   document.getElementById("cityTabs").innerHTML =
     `<h2>${c}</h2>
-     <ul>${ul}</ul>
-     <form id=f>
+     <form id=placeForm>
        <input id=link placeholder="Google Maps link" required>
        <select id=type required><option value="">Type</option>${opts}</select>
        <button>Add</button>
      </form>
      <div id="msgBox"><span id=msg></span></div>`; // message area stays below
 
-  document.getElementById("f").onsubmit = savePlace;
+  document.getElementById("placeForm").onsubmit = savePlace;
   // Initialize map after container is ready
   await initMap(city);
+  const container = document.getElementById("cardsContainer");
+  container.innerHTML = "";
+  for (const row of rows) {
+    const name = row[0];
+    const img = document.createElement("img");
+    img.src = await getWikimediaImage(name);
+    const card = document.createElement("div");
+    card.className = "card";
+    card.append(img, Object.assign(document.createElement("h4"), {textContent: name}));
+    container.appendChild(card);
+  }
+}
+
+async function getWikimediaImage(name) {
+  const url = `https://en.wikipedia.org/w/api.php?origin=*&action=query&titles=${encodeURIComponent(name)}&prop=pageimages&format=json&pithumbsize=300`;
+  const data = await (await fetch(url)).json();
+  const page = Object.values(data.query.pages)[0];
+  return page?.thumbnail?.source || "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg";
 }
 
 async function savePlace(e) {
