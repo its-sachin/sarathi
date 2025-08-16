@@ -1,4 +1,4 @@
-const URL = "https://script.google.com/macros/s/AKfycbw2rTXJ5YxdgVZRKGM0PzMsYH-ikQfutTIqsiYScaz6YWIiBKgzHaQfbLfvZ67A353E/exec"; // <-- replace
+const URL = "https://script.google.com/macros/s/AKfycbzgeZ1HdpbQ7LTxZ5DA0DWSELfEixGD21KUm_RjeGwzvdrv8nbdU4S5Dq-zXpp9Zz_G/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
 
 let map; // global map reference
