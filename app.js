@@ -3,6 +3,7 @@ let city = "Tokyo"; // default, updated on tab click
 
 let map; // global map reference
 const typeIcons = {
+  Home: "🏠",
   Shrine: "⛩️", 
   Park: "🌳", 
   Museum: "🏛️",
