@@ -10,7 +10,9 @@ const typeIcons = {
   Restaurant: "🍽️", 
   Shop: "🛍️",
   Other: "📍",
-  Street: "🚶"
+  Street: "🚶",
+  Monument: "🗽",
+  Metro: "🚇",
 };
 
 const cityCenters = {
@@ -39,11 +41,13 @@ async function initMap(city, rows, zoom=11) {
 
   const key = await fetch(URL)
                   .then(r => r.json()).then(d => d.key);
-
-  L.tileLayer(`https://api.maptiler.com/maps/bright/{z}/{x}/{y}.png?key=${key}`, {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/">OSM</a> contributors &copy; <a href="https://www.maptiler.com/">MapTiler</a>',
-    maxZoom: 20
-  }).addTo(map);
+                  
+L.tileLayer("https://a.osmap.asia/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors',
+  subdomains: "abc"
+}).addTo(map);
+  
 
   // Clear existing markers
   map.eachLayer(l => l instanceof L.Marker && map.removeLayer(l));
