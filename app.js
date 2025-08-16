@@ -1,4 +1,4 @@
-const URL = "https://script.google.com/macros/s/AKfycbzqXMAbwmDIMo_dRVBziQS-w1qKOkJTy_qeipiQrFc-qARMmxuupyfhIfxpM3RveDRA/exec"; // <-- replace
+const URL = "https://script.google.com/macros/s/AKfycbw2rTXJ5YxdgVZRKGM0PzMsYH-ikQfutTIqsiYScaz6YWIiBKgzHaQfbLfvZ67A353E/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
 
 let map; // global map reference
@@ -12,7 +12,7 @@ const typeIcons = {
   Other: "📍",
   Street: "🚶",
   Monument: "🗽",
-  Metro: "🚇",
+  Activity: "🎉",
 };
 
 const cityCenters = {
@@ -41,12 +41,14 @@ async function initMap(city, rows, zoom=11) {
 
   const key = await fetch(URL)
                   .then(r => r.json()).then(d => d.key);
-                  
-L.tileLayer("https://a.osmap.asia/{z}/{x}/{y}.png", {
-  maxZoom: 19,
-  attribution: '&copy; OpenStreetMap contributors',
-  subdomains: "abc"
-}).addTo(map);
+
+  const mtLayer = L.maptilerLayer({
+    apiKey: key,
+    style: `https://api.maptiler.com/maps/0198b438-d1b5-7f34-8dc7-9f51e521baaa/style.json?key=${key}`
+  }).addTo(map);
+
+  // Force English labels
+  mtLayer.setLanguage(L.MaptilerLanguage.ENGLISH);
   
 
   // Clear existing markers
@@ -78,7 +80,7 @@ async function showTab(c) {
   document.getElementById("cityTabs").innerHTML =
     `<h2 class = "heading">${c}</h2>
      <form id=placeForm>
-       <input id=link placeholder="Google Maps link" required>
+       <input id=link placeholder="Place Name/Link" required>
        <select id=type required><option value="">Type</option>${opts}</select>
        <button>Add</button>
      </form>
