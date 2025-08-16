@@ -126,21 +126,24 @@ form button:hover {
 }
 .emoji-marker .emoji-wrapper {
     position: relative;
-    display: inline-block;
+    display: flex;
     font-size: 28px; /* slightly smaller */
     cursor: pointer;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* subtle 3D shadow */
     transform: perspective(300px) rotateX(5deg); /* slight tilt for depth */
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 50%;
+    width: 42px;                    /* fixed width */
+    height: 42px;                   /* fixed height */
 }
 
 /* Label hidden by default */
 .marker-label {
-    position: absolute;
-    bottom: 110%;
+   position: absolute;
+    top: 100%;   
     left: 50%;
     transform: translateX(-50%);
+    margin-top: 6px;   
     background-color: rgba(0, 0, 0, 0.7);
     color: #fff;
     padding: 3px 6px;
@@ -151,6 +154,7 @@ form button:hover {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s, transform 0.2s;
+     z-index: 999;           /* make sure it’s above the map layer */
 }
 
 /* Show label on hover and slight lift for marker */

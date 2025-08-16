@@ -1,5 +1,6 @@
-const URL = "https://script.google.com/macros/s/AKfycbzgeZ1HdpbQ7LTxZ5DA0DWSELfEixGD21KUm_RjeGwzvdrv8nbdU4S5Dq-zXpp9Zz_G/exec"; // <-- replace
+const APP_URL = "https://script.google.com/macros/s/AKfycbzgeZ1HdpbQ7LTxZ5DA0DWSELfEixGD21KUm_RjeGwzvdrv8nbdU4S5Dq-zXpp9Zz_G/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
+const LABEL_ZOOM = 14;
 
 let map; // global map reference
 const typeIcons = {
@@ -39,7 +40,7 @@ async function initMap(city, rows, zoom=11) {
   map = L.map('map');
   map = map.setView(center, zoom);
 
-  const key = await fetch(URL)
+  const key = await fetch(APP_URL)
                   .then(r => r.json()).then(d => d.key);
 
   const mtLayer = L.maptilerLayer({
@@ -54,11 +55,21 @@ async function initMap(city, rows, zoom=11) {
   // Clear existing markers
   map.eachLayer(l => l instanceof L.Marker && map.removeLayer(l));
 
-  rows.forEach(([name,lat,long,type]) => {
-    if (lat && long) L.marker([+lat, +long], { icon: createEmojiIcon(type, name) })
-      .addTo(map)
-      .bindPopup(`<b>${name}</b><br>Type: ${type}`);
+  const markers = rows.filter(r => r[1] && r[2]).map(([name, lat, long, type]) => 
+      L.marker([+lat, +long], { icon: createEmojiIcon(type, name) })
+        .addTo(map)
+        .bindPopup(`<b>${name}</b><br>Type: ${type}`)
+    );
+
+  console.log(markers);
+
+  const updateLabels = ()=>markers.forEach(m=>{
+    const l = m.getElement()?.querySelector('.marker-label');
+    if(l) l.style.opacity = map.getZoom()>=LABEL_ZOOM?1:0;
   });
+
+  map.on('zoomend', updateLabels);
+  updateLabels();
 }
 
 
@@ -173,7 +184,7 @@ async function savePlace(e) {
   msg.textContent = "⏳ Saving...";
 
   try {
-    const r = await fetch(URL, {
+    const r = await fetch(APP_URL, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
@@ -205,7 +216,7 @@ async function addUserInfo(user, city, place) {
   document.getElementById("savemsg").textContent = "⏳ Saving...";
   try {
     // Replace URL with your backend endpoint
-    const r = await fetch(URL, {
+    const r = await fetch(APP_URL, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
