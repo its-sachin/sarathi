@@ -127,7 +127,9 @@ form button:hover {
 .emoji-marker .emoji-wrapper {
     position: relative;
     display: flex;
-    font-size: 28px; /* slightly smaller */
+    align-items: center;       /* vertical centering */
+    justify-content: center;   /* horizontal centering */
+    font-size: 28px;           /* slightly smaller */
     cursor: pointer;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* subtle 3D shadow */
     transform: perspective(300px) rotateX(5deg); /* slight tilt for depth */
@@ -154,7 +156,6 @@ form button:hover {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s, transform 0.2s;
-     z-index: 999;           /* make sure it’s above the map layer */
 }
 
 /* Show label on hover and slight lift for marker */
