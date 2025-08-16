@@ -20,11 +20,16 @@ const cityCenters = {
 
 // Reusable function to create emoji markers
 const createEmojiIcon = (type, name) => L.divIcon({
-  className: "emoji-marker",
-  html: `${typeIcons[type.trim()] || typeIcons.Other}<br><span class="marker-label">${name}</span>`,
-  iconSize: [40, 40], iconAnchor: [20, 40]
+    className: "emoji-marker",
+    html: `
+      <div class="emoji-wrapper">
+        ${typeIcons[type.trim()] || typeIcons.Other}
+        <span class="marker-label">${name}</span>
+      </div>
+    `,
+    iconSize: [90, 90],      // slightly smaller
+    iconAnchor: [30, 50]     // adjusted anchor
 });
-
 // Initialize or update map for a city
 async function initMap(city, rows, zoom=11) {
   const center = cityCenters[city] || [35.68, 139.76]; // fallback
@@ -61,17 +66,18 @@ async function showTab(c) {
 
 
   document.getElementById("cityTabs").innerHTML =
-    `<h2>${c}</h2>
+    `<h2 class = "heading">${c}</h2>
      <form id=placeForm>
        <input id=link placeholder="Google Maps link" required>
        <select id=type required><option value="">Type</option>${opts}</select>
        <button>Add</button>
      </form>
      <div id="msgBox"><span id=msg></span></div>
+     <div id="cardsContainer"></div>
      <div id="map-container">
       <div id="map"></div>
     </div>
-    <div id="cardsContainer"></div>
+    
     `; // message area stays below
 
   document.getElementById("placeForm").onsubmit = savePlace;
@@ -91,7 +97,7 @@ async function showTab(c) {
     card.style.cursor = "pointer";
 
     card.className = "card";
-    card.append(img, Object.assign(document.createElement("h4"), {textContent: name}));
+    card.append(img, Object.assign(document.createElement("h3"), {textContent: name}));
     container.appendChild(card);
 
     card.addEventListener("click", () => showPlace(name, city, res));
@@ -107,8 +113,8 @@ async function showPlace(placeName, city, placeData=undefined) {
     }
     const container = document.getElementById("cityTabs");
     container.innerHTML = `
-      <h2>${placeName}</h2>
-      <img src="${placeData['link']}" style="max-width:400px; display:block; margin:10px 0;">
+      <h2 class="heading">${placeName}</h2>
+      <img class = "imagePlace" src="${placeData['link']}">
       <div class="infoCardsContainer">
         ${Object.entries(placeData['content']).map(([user, items]) => `
           <div class="infoCard">
@@ -118,7 +124,7 @@ async function showPlace(placeName, city, placeData=undefined) {
               <input type="text" 
                 placeholder="Add info..." 
                 id="addInfoInput-${user}" 
-                style="flex:1; padding:4px 8px;" 
+                class="addInfoInput"
               />
               <button 
                 style="margin-left:4px; font-size:18px; padding:2px 8px;" 
@@ -141,10 +147,10 @@ async function showPlace(placeName, city, placeData=undefined) {
 /* Map user names to emojis */
 function getUserEmoji(user) {
   const map = {
-    "Sachin": "😎",
-    "Neeraja": "🤓",
-    "Dheeraj": "🧐",
-    "Dyuti": "😇"
+    "Sachin": "🥷",
+    "Neeraja": "😤",
+    "Dheeraj": "🤠",
+    "Dyuti": "👩‍🦳"
   };
   return map[user] || "👤";
 }

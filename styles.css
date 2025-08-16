@@ -14,6 +14,13 @@ body {
   color: #222;
 }
 
+.heading {
+  padding: 1rem;
+  font-size: clamp(1rem, 3vw, 2rem);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
 .tabs {
   position: sticky;
   top: 0;
@@ -28,10 +35,10 @@ body {
   flex: 1;
   margin: 0 0.2rem;
   padding: 0.8rem 0;
-  font-size: clamp(0.9rem, 4vw, 1.2rem);
+  font-size: clamp(1.5rem, 4vw, 2rem);
   color: white;
   background: var(--primary-color);
-  border: none;
+  border:rgba(0, 0, 0, 0.3) solid 2px;
   border-radius: 0.5rem;
   cursor: pointer;
   transition: background 0.2s;
@@ -49,16 +56,22 @@ main {
 }
 
 #map-container {
-  width: 95%;
-  max-width: 800px;
-  height: clamp(300px, 50vh, 500px);
+  width: 100%;
+  height: 75vh;
   margin: 1rem 0;
+  padding-left: 20px;   /* space from left edge */
+  padding-right: 50px;  /* space from right edge */
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-sizing: border-box;  /* include padding inside width */
 }
 
-#map { width: 100%; height: 100%; }
+#map {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
 
 #form-container {
   width: 95%;
@@ -111,16 +124,44 @@ form button:hover {
   form input, form select { flex: 2; }
   form button { flex: 1; }
 }
-
-.marker-label {
-    background-color: rgba(0, 0, 0, 0.6); /* semi-transparent black */
-    color: #fff;                          /* white text */
-    padding: 2px 6px;                     /* space around text */
-    border-radius: 4px;                   /* rounded corners */
-    text-shadow: 0 0 2px #000;            /* subtle shadow for readability */
-    font-size: 13px;                       /* slightly larger for readability */
+.emoji-marker .emoji-wrapper {
+    position: relative;
     display: inline-block;
-    }
+    font-size: 28px; /* slightly smaller */
+    cursor: pointer;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* subtle 3D shadow */
+    transform: perspective(300px) rotateX(5deg); /* slight tilt for depth */
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+}
+
+/* Label hidden by default */
+.marker-label {
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 3px 6px;
+    border-radius: 5px;
+    text-shadow: 0 0 2px #000;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+/* Show label on hover and slight lift for marker */
+.emoji-wrapper:hover .marker-label {
+    opacity: 1;
+}
+
+.emoji-wrapper:hover {
+    transform: perspective(300px) rotateX(0deg) scale(1.1); /* lift effect */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+}
 
 .card {
   width: 300px;
@@ -139,8 +180,23 @@ form button:hover {
 }
 .card h3 {
   margin: 10px 0;
+  font-size: clamp(10px, 4vw, 20px); /* automatically scales with container width */
+  line-height: 1.2;
+  white-space: nowrap;                /* prevents wrapping */
+  overflow: hidden;                   /* hide overflow */
+  text-overflow: ellipsis;            /* adds "..." if too long */
 }
 
+
+.imagePlace {
+  max-width: 400px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px auto; /* center image */
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
 
 /* Container for all cards */
 .infoCardsContainer {
@@ -154,15 +210,15 @@ form button:hover {
 /* Individual card */
 .infoCard {
   position: relative;
-  background: #1a1a2e;
-  color: #e0e0e0;
-  width: 220px;
+  background: #b1cee7;
+  color: #282631;
+  width: clamp(250px, 30%, 350px); /* fluid width: min 250px, max 350px */
   border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 255, 255, 0.2);
+  box-shadow: 0 6px 20px rgba(44, 48, 48, 0.2);
   padding: 25px 15px 15px 15px;
   font-family: 'Segoe UI', sans-serif;
   overflow: visible;
-  margin-top: 40px; /* prevents circle overlap with previous card */
+  margin-top: 40px; 
   transition: transform 0.2s;
   z-index: 0;
 }
@@ -176,23 +232,22 @@ form button:hover {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #0ff, #08f);
+  background: linear-gradient(135deg,  #3498db,  #3498db);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
   border: 2px solid rgba(255,255,255,0.2);
-  box-shadow: 0 0 10px #0ff;
+  box-shadow: 0 0 10px  #3498db;;
   z-index: 1;
 }
 
 /* Title bar */
 .infoCard .titleBar {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 20px;
   margin-bottom: 10px;
-  padding-left: 40px; /* avoids circle overlap */
-  text-shadow: 0 0 4px #0ff;
+  padding-left: 40px;
 }
 
 /* List styling */
@@ -205,13 +260,62 @@ form button:hover {
   position: relative;
   padding-left: 15px;
   margin: 6px 0;
-  font-size: 13px;
-  color: #c0f0f0;
+  font-size: 17px;
+  color: #08062d;
 }
 .infoCard ul li::before {
   content: "▸";
   position: absolute;
   left: 0;
-  color: #0ff;
-  text-shadow: 0 0 3px #0ff;
+  color: 08062d;
+  text-shadow: 0 0 3px #08062d;
+}
+
+.addInfoInput {
+  flex: 1;
+  padding: 5px 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+/* --- Responsive for mobile --- */
+@media (max-width: 1200px) {
+
+  .city-btn {
+    font-size: clamp(3rem, 5vw, 4rem); /* bigger text on mobile */
+    padding: 1rem 0;                        /* taller buttons for touch */
+    margin: 0 0.3rem;                        /* slightly more spacing */
+  }
+
+
+  .infoCardsContainer {
+    flex-direction: column;   /* stack cards vertically */
+    align-items: center;      /* center cards */
+  }
+
+  .infoCard {
+    width: 90vw;             /* bigger on mobile */
+    padding: 30px 20px 20px 20px;
+  }
+
+  .infoCard .titleBar {
+    font-size: 25px;
+    padding-left: 50px;      /* maintain circle spacing */
+  }
+
+  .infoCard ul li {
+    font-size: 20px;         /* bigger list text */
+  }
+
+  .infoCard .userBadge {
+    width: 70px;
+    height: 70px;
+    font-size: 32px;
+  }
+
+  .addInfoInput {
+    flex: 1;
+    padding: 10px 8px;
+  }
 }
