@@ -180,7 +180,7 @@ form button:hover {
 }
 .card h3 {
   margin: 10px 0;
-  font-size: clamp(10px, 4vw, 20px); /* automatically scales with container width */
+  font-size: clamp(10px, 4vw, 18px); /* automatically scales with container width */
   line-height: 1.2;
   white-space: nowrap;                /* prevents wrapping */
   overflow: hidden;                   /* hide overflow */
