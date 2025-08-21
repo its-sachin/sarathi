@@ -1,4 +1,4 @@
-const APP_URL = "https://script.google.com/macros/s/AKfycbzgeZ1HdpbQ7LTxZ5DA0DWSELfEixGD21KUm_RjeGwzvdrv8nbdU4S5Dq-zXpp9Zz_G/exec"; // <-- replace
+const APP_URL = "https://script.google.com/macros/s/AKfycbwNaf3s98MVvjtzHcE1quFtE9WY-joWEDfovpn51ON-3eVABtpKbEb2liVWPTUzeQ2f/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
 const LABEL_ZOOM = 14;
 
@@ -173,7 +173,8 @@ function getUserEmoji(user) {
     "Sachin": "🥷",
     "Neeraja": "😤",
     "Dheeraj": "🤠",
-    "Dyuti": "👩‍🦳"
+    "Dyuti": "👩‍🦳",
+    "Rohit": "😎"
   };
   return map[user] || "👤";
 }
