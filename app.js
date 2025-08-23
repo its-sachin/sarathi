@@ -73,8 +73,11 @@ async function initMap(city, rows, zoom=11) {
 }
 
 
-async function showTab(c) {
+async function showTab(c, push=true) {
   city = c;
+  if(push) {
+    window.history.pushState({ type: "tab", city: c }, c, `?city=${c}`);
+  }
   const r = await fetch(`data/${c}/${c}.csv`);
   const t = await r.text();
   const rows = t
@@ -127,7 +130,10 @@ async function showTab(c) {
   }
 }
 
-async function showPlace(placeName, city, placeData=undefined) {
+async function showPlace(placeName, city, placeData=undefined, push=true) {
+  if(push) {
+    window.history.pushState({ type: "place", city, placeName }, placeName, `?city=${city}&place=${placeName}`);
+  }
   try {
     if (!placeData) {
       const res = await fetch(`data/${city}/${placeName}.json`);
@@ -237,4 +243,26 @@ async function addUserInfo(user, city, place) {
   }
 }
 
-showTab(city); // Initialize with default city
+window.addEventListener("popstate", (event) => {
+    const state = event.state;
+    if (!state) return;
+
+    if (state.type === "tab") {
+        showTab(state.city, false); // false: don’t push again
+    } else if (state.type === "place") {
+        showPlace(state.placeName, state.city, undefined, false);
+    }
+});
+
+// --- Initialize default city (or from URL) ---
+const urlParams = new URLSearchParams(window.location.search);
+const cityParam = urlParams.get("city");
+const placeParam = urlParams.get("place");
+
+if (placeParam && cityParam) {
+    showPlace(placeParam, cityParam, undefined, false);
+} else if (cityParam) {
+    showTab(cityParam, false);
+} else {
+    showTab(city);
+}
