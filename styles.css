@@ -286,7 +286,7 @@ form button:hover {
   margin-right: 8px;
 }
 /* --- Responsive for mobile --- */
-@media (max-width: 1200px) {
+@media (max-width: 750px) {
 
   .city-btn {
     font-size: clamp(3rem, 5vw, 4rem); /* bigger text on mobile */
