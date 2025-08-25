@@ -1,4 +1,4 @@
-const APP_URL = "https://script.google.com/macros/s/AKfycbwVNfke4Z5GqXuo0I5tVL7wU7Pw1KZffeL83M2BwW2Cc-rM81x2OhP6LLXozO26nroe/exec"; // <-- replace
+const APP_URL = "https://script.google.com/macros/s/AKfycbzEQ5AjznW8o4vH_YugpF6VApf6fgyi_D4pnR36M9vgnjtaBWs8FheGUG8La9IG8Y4/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
 const LABEL_ZOOM = 14;
 
@@ -40,7 +40,7 @@ async function initMap(city, rows, zoom=11) {
   map = L.map('map');
   map = map.setView(center, zoom);
 
-  const key = await fetch(APP_URL)
+  const key = await fetch(APP_URL + "?action=getMapKey")
                   .then(r => r.json()).then(d => d.key);
 
   const mtLayer = L.maptilerLayer({
