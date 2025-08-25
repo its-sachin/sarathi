@@ -1,4 +1,4 @@
-const APP_URL = "https://script.google.com/macros/s/AKfycbzEQ5AjznW8o4vH_YugpF6VApf6fgyi_D4pnR36M9vgnjtaBWs8FheGUG8La9IG8Y4/exec"; // <-- replace
+const APP_URL = "https://script.google.com/macros/s/AKfycby1YsKwi40z-EWluTdeF93hNIhQalTJRn-DI4j9S2oAhT4fnOCbjuMzKF_PMGs1i8rg/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
 const LABEL_ZOOM = 14;
 
@@ -22,6 +22,7 @@ const cityCenters = {
   Kyoto: [35.01, 135.77]
 };
 
+let key;
 // Reusable function to create emoji markers
 const createEmojiIcon = (type, name) => L.divIcon({
     className: "emoji-marker",
@@ -40,13 +41,17 @@ async function initMap(city, rows, zoom=11) {
   map = L.map('map');
   map = map.setView(center, zoom);
 
-  const key = await fetch(APP_URL + "?action=getMapKey")
+  if(!key) {
+    key = await fetch(APP_URL + "?action=getMapKey")
                   .then(r => r.json()).then(d => d.key);
+  }
 
+  
   const mtLayer = L.maptilerLayer({
     apiKey: key,
     style: `https://api.maptiler.com/maps/0198b438-d1b5-7f34-8dc7-9f51e521baaa/style.json?key=${key}`
   }).addTo(map);
+
 
   // Force English labels
   mtLayer.setLanguage(L.MaptilerLanguage.ENGLISH);
@@ -60,8 +65,6 @@ async function initMap(city, rows, zoom=11) {
         .addTo(map)
         .bindPopup(`<b>${name}</b><br>Type: ${type}`)
     );
-
-  console.log(markers);
 
   const updateLabels = ()=>markers.forEach(m=>{
     const l = m.getElement()?.querySelector('.marker-label');
