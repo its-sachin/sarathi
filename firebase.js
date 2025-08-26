@@ -18,6 +18,11 @@
   const app = initializeApp(firebaseConfig);
   export const db = getFirestore(app);
 
+  export async function fetchMapKey() {
+    const keyDoc = await getDoc(doc(db, "key", "maptiler-key"));
+    return keyDoc.exists() ? keyDoc.data().value : null;
+  }
+
   // --- 1. Fetch all places of a city (returns CSV-like rows) ---
   export async function fetchPlacesCSV(cityId) {
     const snap = await getDocs(collection(db, "cities", cityId, "places"));

@@ -1,4 +1,4 @@
-import { fetchPlacesCSV, fetchPlaceContributions, addContribution } from "./firebase.js";
+import { fetchMapKey, fetchPlacesCSV, fetchPlaceContributions, addContribution } from "./firebase.js";
 
 const APP_URL = "https://script.google.com/macros/s/AKfycbxZ4EvYlRLCkhNMT9BKhQRdkls2_A3o7LM5yPBHWgYVEBz1_94102HTIl-F_2nWRp9DXg/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
@@ -44,8 +44,7 @@ async function initMap(city, rows, zoom=11) {
   map = map.setView(center, zoom);
 
   if(!key) {
-    key = await fetch(APP_URL + "?action=getMapKey")
-                  .then(r => r.json()).then(d => d.key);
+    key = await fetchMapKey();
   }
 
   
