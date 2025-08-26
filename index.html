@@ -12,13 +12,7 @@
 </head>
 <body>
   <!-- <h1>Japan City Maps</h1> -->
-  <div class="tabs">
-    <button class="city-btn" onclick="showTab('Tokyo')">Tokyo</button>
-    <button class="city-btn" onclick="showTab('Osaka')">Osaka</button>
-    <button class="city-btn" onclick="showTab('Kyoto')">Kyoto</button>
-  </div>
-
-  <div id="cityTabs"></div>
+  
   
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -26,6 +20,17 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.maptiler.com/maptiler-sdk-js/v1.1.2/maptiler-sdk.umd.js"></script>
   <script src="https://cdn.maptiler.com/leaflet-maptilersdk/v1.0.0/leaflet-maptilersdk.js"></script>
-  <script src="./app.js"></script>
+
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="./app.js"></script>
+
+
+  <div class="tabs">
+    <button class="city-btn" data-city="Tokyo">Tokyo</button>
+    <button class="city-btn" data-city="Osaka">Osaka</button>
+    <button class="city-btn" data-city="Kyoto">Kyoto</button>
+  </div>
+
+  <div id="cityTabs"></div>
 </body>
 </html>
