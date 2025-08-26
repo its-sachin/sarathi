@@ -1,4 +1,4 @@
-const APP_URL = "https://script.google.com/macros/s/AKfycby1YsKwi40z-EWluTdeF93hNIhQalTJRn-DI4j9S2oAhT4fnOCbjuMzKF_PMGs1i8rg/exec"; // <-- replace
+const APP_URL = "https://script.google.com/macros/s/AKfycbw_rBFMJIPunhr8Cdryvp5LJOceHLNhlG-XTAkaZMWmljyezX5U8uEZEZDZBlALZWAD/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
 const LABEL_ZOOM = 14;
 
