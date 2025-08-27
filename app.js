@@ -1,6 +1,6 @@
 import { fetchMapKey, fetchPlacesCSV, fetchPlaceContributions, addContribution } from "./firebase.js";
 
-const APP_URL = "https://script.google.com/macros/s/AKfycbxZ4EvYlRLCkhNMT9BKhQRdkls2_A3o7LM5yPBHWgYVEBz1_94102HTIl-F_2nWRp9DXg/exec"; // <-- replace
+const APP_URL = "https://script.google.com/macros/s/AKfycbwSXM2bHB0WvIJzyZTgbCjz4jZgXWsazvH67ERQ0IYPVSt97i_r8cOdJIMa2xQbo0s2ow/exec"; // <-- replace
 let city = "Tokyo"; // default, updated on tab click
 const LABEL_ZOOM = 14;
 
@@ -38,7 +38,7 @@ const createEmojiIcon = (type, name) => L.divIcon({
     iconAnchor: [30, 50]     // adjusted anchor
 });
 // Initialize or update map for a city
-async function initMap(city, rows, zoom=11) {
+async function initMap(city, rows, zoom=13) {
   const center = cityCenters[city] || [35.68, 139.76]; // fallback
   map = L.map('map');
   map = map.setView(center, zoom);
@@ -149,7 +149,12 @@ async function showPlace(placeName, city, push=true) {
             return `
               <div class="infoCard">
                 <div class="userBadge">${getUserEmoji(user)}</div>
-                <div class="titleBar">${user}</div><div id="savemsg"></div>
+                <div class="titleBar">${user}</div>
+                <ul>
+                  ${items.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+
+                <div id="savemsg-${user}"></div>
                 <div style="display:flex; align-items:center; margin-bottom:10px;">
                   <input type="text" 
                     placeholder="Add info..." 
@@ -162,14 +167,10 @@ async function showPlace(placeName, city, push=true) {
                     title="Add"
                   >+</button>
                 </div>
-                <ul>
-                  ${items.length ? items.map(item => `<li>${item}</li>`).join('') : '<li>No info yet</li>'}
-                </ul>
               </div>
             `;
           }).join('')}
       </div>
-      <div id="msg"></div>
     `;
   } catch (err) {
     alert(`Could not load data for ${placeName}: ${err}`);
@@ -217,23 +218,22 @@ async function savePlace(e) {
 
 // Add this helper function once in your JS
 async function addUserInfo(user, city, place) {
-  console.log("Adding info for", user, city, place);
   const input = document.getElementById(`addInfoInput-${user}`);
   const info = input.value.trim();
   if (!info) return;
   input.value = "";
 
-  document.getElementById("savemsg").textContent = "⏳ Saving...";
+  document.getElementById(`savemsg-${user}`).textContent = "⏳ Saving...";
   try {
     // Replace URL with your backend endpoint
     const r = await addContribution(city, place, user, info);
-    document.getElementById("savemsg").textContent = await r.message;
+    document.getElementById(`savemsg-${user}`).textContent = await r.message;
     await new Promise(res => setTimeout(res, 500));
     showPlace(place, city);
     // document.getElementById("msg").textContent = "";
   } catch (e) {
     console.error("Error adding user info:", e);
-    document.getElementById("savemsg").textContent = "❌ Network error";
+    document.getElementById(`savemsg-${user}`).textContent = "❌ Network error";
   }
 }
 
