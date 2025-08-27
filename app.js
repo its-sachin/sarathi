@@ -194,7 +194,7 @@ async function showPlace(placeName, city, push=true) {
               <div class="infoCard">
                 <div class="userBadge">${getUserEmoji(user)}</div>
                 <div class="titleBar">${user}</div>
-                <hr>
+                <hr class="line">
                 <ul>
                   ${items.map(item => `<li>${item}</li>`).join('')}
                 </ul>

@@ -276,6 +276,14 @@ form button { flex: 1; }
   text-shadow: 0 0 3px #08062d;
 }
 
+.line {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, #393939, #3f3e3e);
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
 .addInfoInput {
   flex: 1;
   padding: 5px 8px;
