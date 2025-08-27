@@ -61,11 +61,41 @@ async function initMap(city, rows, zoom=13) {
   // Clear existing markers
   map.eachLayer(l => l instanceof L.Marker && map.removeLayer(l));
 
-  const markers = rows.filter(r => r[1] && r[2]).map(([name, lat, long, type]) => 
-      L.marker([+lat, +long], { icon: createEmojiIcon(type, name) })
-        .addTo(map)
-        .bindPopup(`<b>${name}</b><br>Type: ${type}`)
-    );
+  // const markers = rows.filter(r => r[1] && r[2]).map(([name, lat, long, type]) => 
+  //     L.marker([+lat, +long], { icon: createEmojiIcon(type, name) })
+  //       .addTo(map)
+  //       .bindPopup(`<b>${name}</b><br>Type: ${type}`)
+  //   );
+
+  const markers = rows.filter(r => r[1] && r[2]).map(([name, lat, long, type, imgUrl]) => {
+    const marker = L.marker([+lat, +long], { icon: createEmojiIcon(type, name) }).addTo(map);
+
+    // Card HTML
+    const popupContent = `
+      <div class="place-card" style="cursor:pointer; width:200px; text-align:center;">
+        <img src="${imgUrl}" alt="${name}" style="width:100%; height:120px; object-fit:cover; border-radius:6px;" />
+        <h4 style="margin:5px 0;">${name}</h4>
+        <p style="margin:0; color:#555;">${type}</p>
+      </div>
+    `;
+
+    const popup = L.popup({
+      offset: [0, -50], // move popup 70px above the marker
+      closeButton: false,
+      autoPan: true,
+      className: 'place-card-popup'
+    }).setContent(popupContent);
+
+    marker.bindPopup(popup);
+
+    // Navigate to page on click
+    marker.on('popupopen', e => {
+      const card = e.popup.getElement().querySelector('.place-card');
+      card.onclick = () => showPlace(name, city);
+    });
+
+    return marker;
+  });
 
   const updateLabels = ()=>markers.forEach(m=>{
     const l = m.getElement()?.querySelector('.marker-label');
