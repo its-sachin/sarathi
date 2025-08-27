@@ -160,6 +160,7 @@ async function showPlace(placeName, city, push=true) {
                     placeholder="Add info..." 
                     id="addInfoInput-${user}" 
                     class="addInfoInput"
+                    onkeydown="if(event.key === 'Enter') addUserInfo('${user}', '${city}', '${placeName}')"
                   />
                   <button 
                     style="margin-left:4px; font-size:18px; padding:2px 8px;" 
