@@ -151,6 +151,18 @@ async function showTab(c, push=true) {
   document.getElementById("placeForm").onsubmit = savePlace;
   // Initialize map after container is ready
   initMap(city, rows);
+
+  const refLat = cityCenters[city][0];
+  const refLng = cityCenters[city][1];
+
+  // Function to calculate simple squared distance (faster than haversine)
+  function distanceSq(lat, lng) {
+    return (lat - refLat)**2 + (lng - refLng)**2;
+  }
+
+  // Sort rows by distance
+  rows.sort((a, b) => distanceSq(a[1], a[2]) - distanceSq(b[1], b[2]));
+
   const container = document.getElementById("cardsContainer");
   container.innerHTML = "";
   for (const row of rows) {
@@ -163,10 +175,11 @@ async function showTab(c, push=true) {
     card.style.cursor = "pointer";
 
     card.className = "card";
-    card.append(img, Object.assign(document.createElement("h3"), {textContent: name}));
+    card.append(img, Object.assign(document.createElement("h3"), {textContent: typeIcons[row[3]] + " " + name}));
     container.appendChild(card);
 
     card.addEventListener("click", () => showPlace(name, city));
+    
   }
 }
 
