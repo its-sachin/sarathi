@@ -40,7 +40,27 @@ const createEmojiIcon = (type, name) => L.divIcon({
 // Initialize or update map for a city
 async function initMap(city, rows, zoom=13) {
   const center = cityCenters[city] || [35.68, 139.76]; // fallback
-  map = L.map('map');
+  // Base options for desktop
+  let mapOptions = {
+    center,
+    zoom,
+    scrollWheelZoom: true,  // keep normal on PC
+    dragging: true,
+    tap: false
+  };
+
+  // Detect mobile (touchscreen)
+  if ("ontouchstart" in window || navigator.maxTouchPoints > 0) {
+    mapOptions = {
+      ...mapOptions,
+      dragging: false,        // disable 1-finger drag
+      tap: false,             // prevent single-finger hijack
+      scrollWheelZoom: false, // no scroll zoom on mobile
+      touchZoom: true
+    };
+  }
+
+  map = L.map('map', mapOptions);
   map = map.setView(center, zoom);
 
   if(!key) {
@@ -60,12 +80,6 @@ async function initMap(city, rows, zoom=13) {
 
   // Clear existing markers
   map.eachLayer(l => l instanceof L.Marker && map.removeLayer(l));
-
-  // const markers = rows.filter(r => r[1] && r[2]).map(([name, lat, long, type]) => 
-  //     L.marker([+lat, +long], { icon: createEmojiIcon(type, name) })
-  //       .addTo(map)
-  //       .bindPopup(`<b>${name}</b><br>Type: ${type}`)
-  //   );
 
   const markers = rows.filter(r => r[1] && r[2]).map(([name, lat, long, type, imgUrl]) => {
     const marker = L.marker([+lat, +long], { icon: createEmojiIcon(type, name) }).addTo(map);
@@ -180,6 +194,7 @@ async function showPlace(placeName, city, push=true) {
               <div class="infoCard">
                 <div class="userBadge">${getUserEmoji(user)}</div>
                 <div class="titleBar">${user}</div>
+                <hr>
                 <ul>
                   ${items.map(item => `<li>${item}</li>`).join('')}
                 </ul>
@@ -193,7 +208,7 @@ async function showPlace(placeName, city, push=true) {
                     onkeydown="if(event.key === 'Enter') addUserInfo('${user}', '${city}', '${placeName}')"
                   />
                   <button 
-                    style="margin-left:4px; font-size:18px; padding:2px 8px;" 
+                    class="infoButton"
                     onclick="addUserInfo('${user}', '${city}', '${placeName}')"
                     title="Add"
                   >+</button>

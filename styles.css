@@ -108,6 +108,10 @@ form button:hover {
   background: var(--primary-hover);
 }
 
+form { flex-direction: row; }
+form input, form select { flex: 2; }
+form button { flex: 1; }
+
 /* Leaflet marker labels */
 .leaflet-tooltip {
   background-color: rgba(0,0,0,0.6) !important;
@@ -118,12 +122,7 @@ form button:hover {
   text-shadow: 0 0 2px #000 !important;
 }
 
-/* Media queries for tablet and desktop */
-@media(min-width: 768px) {
-  form { flex-direction: row; }
-  form input, form select { flex: 2; }
-  form button { flex: 1; }
-}
+
 .emoji-marker .emoji-wrapper {
     position: relative;
     display: flex;
@@ -285,8 +284,49 @@ form button:hover {
   border-radius: 4px;
   margin-right: 8px;
 }
+
+.infoButton{
+  margin-left:4px; 
+  font-size:18px; 
+  padding:2px 8px;
+}
 /* --- Responsive for mobile --- */
 @media (max-width: 1200px) {
+
+  
+  .heading {
+    font-size: clamp(3rem, 5vw, 5rem);
+  }
+
+  html { font-size: 20px; }
+
+  form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* 2-column grid */
+    grid-template-areas:
+      "input input"
+      "select button";
+    gap: 0.8rem;
+  }
+
+  form input {
+    grid-area: input;
+  }
+
+  form select {
+    grid-area: select;
+  }
+
+  form button {
+    grid-area: button;
+  }
+
+  form input,
+  form select,
+  form button {
+    font-size: clamp(1.1rem, 6vw, 2rem);
+    padding: 1.2rem;
+  }
 
   .city-btn {
     font-size: clamp(3rem, 5vw, 4rem); /* bigger text on mobile */
@@ -294,34 +334,64 @@ form button:hover {
     margin: 0 0.3rem;                        /* slightly more spacing */
   }
 
+  .card {
+    width: 45%;          /* almost full screen width */
+  }
+  .card img {
+    height: 250px;       /* taller image for mobile */
+  }
+  .card h3 {
+    font-size: clamp(20px, 10vw, 30px); /* slightly bigger text */
+  }
+
 
   .infoCardsContainer {
-    flex-direction: column;   /* stack cards vertically */
-    align-items: center;      /* center cards */
+    gap: 20px;
+    padding: 0 30px; /* less side padding on small screens */
   }
 
   .infoCard {
-    width: 90vw;             /* bigger on mobile */
-    padding: 30px 20px 20px 20px;
-  }
-
-  .infoCard .titleBar {
-    font-size: 25px;
-    padding-left: 50px;      /* maintain circle spacing */
-  }
-
-  .infoCard ul li {
-    font-size: 20px;         /* bigger list text */
+    width: 90%;         /* each card takes full width */
+    padding: 30px;       /* bigger tap-friendly padding */
+    font-size: 45px;     /* slightly larger base font */
   }
 
   .infoCard .userBadge {
-    width: 70px;
-    height: 70px;
-    font-size: 32px;
+    width: 100px;
+    height: 100px;
+    font-size: 50px;
   }
 
-  .addInfoInput {
-    flex: 1;
-    padding: 10px 8px;
+  .infoCard .titleBar {
+    font-size: 45px; /* bigger headings */
+    padding-left: 100px;
   }
+
+  .infoCard ul li {
+    font-size: 40px;
+    margin: 10px 0;
+    padding-left: 25px;
+  }
+
+    
+  .imagePlace {
+    max-width: 90%;   /* almost full width */
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    margin: 20px auto; /* more vertical spacing */
+  }
+
+  /* Input fixes */
+  .addInfoInput {
+    padding: 15px 15px;     /* bigger padding */
+    font-size: 40px;        /* >=16px prevents zoom */
+    border-radius: 6px;
+  }
+
+  .infoButton {
+    font-size: 40px;        /* bigger button text */
+    padding: 10px 15px;    /* bigger tap area */
+    border-radius: 6px;
+  }
+
 }
