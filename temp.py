@@ -60,3 +60,4 @@ for city in ['Osaka']:
                         "userId": user,
                         "data": data
                     })
+

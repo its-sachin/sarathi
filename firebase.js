@@ -1,7 +1,7 @@
 // --- Firebase imports ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { 
-    getFirestore, collection, doc, getDocs, getDoc, setDoc, arrayUnion 
+    getFirestore, collection, doc, getDocs, getDoc, setDoc, arrayUnion, addDoc, deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
   // --- Firebase config ---
@@ -54,4 +54,43 @@
     console.error("❌ Error adding contribution:", error);
     return { success: false, message: error.message };
   }
+}
+
+/**
+ * Generalised Firestore CRUD for events
+ */
+export async function fetchEvents(cityId) {
+  const snap = await getDocs(collection(db, "cities", cityId, "calendar"));
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+export async function addOrUpdateEvent(cityId, eventId, event) {
+  if (eventId) {
+    // update existing
+    await setDoc(doc(db, "cities", cityId, "calendar", eventId), event);
+    return { id: eventId, ...event };
+  } else {
+    // add new
+    const ref = await addDoc(collection(db, "cities", cityId, "calendar"), event);
+    return { id: ref.id, ...event };
+  }
+}
+
+export async function deleteEvent(cityId, eventId) {
+  await deleteDoc(doc(db, "cities", cityId, "calendar", eventId));
+}
+
+
+// Fetch trip info (arrival/departure)
+export async function fetchTripInfo(cityId) {
+  const docRef = doc(db, "cities", cityId, "tripInfo", "dates");
+  const snap = await getDoc(docRef);
+  return snap.exists() ? snap.data() : null;
+}
+
+// Save trip info
+export async function saveTripInfo(cityId, arrival, departure) {
+  const docRef = doc(db, "cities", cityId, "tripInfo", "dates");
+  await setDoc(docRef, { arrival, departure }, { merge: true });
+  return { arrival, departure };
 }

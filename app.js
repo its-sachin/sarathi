@@ -1,36 +1,21 @@
-import { fetchMapKey, fetchPlacesCSV, fetchPlaceContributions, addContribution } from "./firebase.js";
+import { fetchMapKey, fetchPlacesCSV, fetchPlaceContributions, addContribution,
+} from "./firebase.js";
 
-const APP_URL = "https://script.google.com/macros/s/AKfycbwSXM2bHB0WvIJzyZTgbCjz4jZgXWsazvH67ERQ0IYPVSt97i_r8cOdJIMa2xQbo0s2ow/exec"; // <-- replace
+import { initCalendar } from "./calendar.js";
+
+import * as Constants from "./const.js";
+
 let city = "Tokyo"; // default, updated on tab click
-const LABEL_ZOOM = 14;
-
 let map; // global map reference
-const typeIcons = {
-  Home: "🏠",
-  Shrine: "⛩️", 
-  Park: "🌳", 
-  Museum: "🏛️",
-  Restaurant: "🍽️", 
-  Shop: "🛍️",
-  Other: "📍",
-  Street: "🚶",
-  Monument: "🗽",
-  Activity: "🎉",
-};
-
-const cityCenters = {
-  Tokyo: [35.68, 139.76],
-  Osaka: [34.69, 135.50],
-  Kyoto: [35.01, 135.77]
-};
-
 let key;
+
+
 // Reusable function to create emoji markers
 const createEmojiIcon = (type, name) => L.divIcon({
     className: "emoji-marker",
     html: `
       <div class="emoji-wrapper">
-        ${typeIcons[type.trim()] || typeIcons.Other}
+        ${Constants.typeIcons[type.trim()] || Constants.typeIcons.Other}
         <span class="marker-label">${name}</span>
       </div>
     `,
@@ -39,7 +24,7 @@ const createEmojiIcon = (type, name) => L.divIcon({
 });
 // Initialize or update map for a city
 async function initMap(city, rows, zoom=13) {
-  const center = cityCenters[city] || [35.68, 139.76]; // fallback
+  const center = Constants.cityCenters[city] || [35.68, 139.76]; // fallback
   // Base options for desktop
   let mapOptions = {
     center,
@@ -113,13 +98,12 @@ async function initMap(city, rows, zoom=13) {
 
   const updateLabels = ()=>markers.forEach(m=>{
     const l = m.getElement()?.querySelector('.marker-label');
-    if(l) l.style.opacity = map.getZoom()>=LABEL_ZOOM?1:0;
+    if(l) l.style.opacity = map.getZoom()>=Constants.LABEL_ZOOM?1:0;
   });
 
   map.on('zoomend', updateLabels);
   updateLabels();
 }
-
 
 async function showTab(c, push=true) {
   city = c;
@@ -128,8 +112,8 @@ async function showTab(c, push=true) {
   }
 
   const rows = await fetchPlacesCSV(c);
-  const opts = Object.keys(typeIcons)
-    .map(v => `<option value="${v}">${typeIcons[v]} ${v}</option>`)
+  const opts = Object.keys(Constants.typeIcons)
+    .map(v => `<option value="${v}">${Constants.typeIcons[v]} ${v}</option>`)
     .join('');
 
 
@@ -141,7 +125,16 @@ async function showTab(c, push=true) {
        <button>Add</button>
      </form>
      <div id="msgBox"><span id=msg></span></div>
+     
+
      <div id="cardsContainer"></div>
+
+
+     <!-- ✅ calendar container -->
+     <h2 class = "heading2"> Scheduler </h3>
+    <div id="tripCalendar" style="margin-top:20px;"></div>
+
+    <h2 class = "heading2"> Map-View </h3>
      <div id="map-container">
       <div id="map"></div>
     </div>
@@ -152,8 +145,8 @@ async function showTab(c, push=true) {
   // Initialize map after container is ready
   initMap(city, rows);
 
-  const refLat = cityCenters[city][0];
-  const refLng = cityCenters[city][1];
+  const refLat = Constants.cityCenters[city][0];
+  const refLng = Constants.cityCenters[city][1];
 
   // Function to calculate simple squared distance (faster than haversine)
   function distanceSq(lat, lng) {
@@ -162,6 +155,10 @@ async function showTab(c, push=true) {
 
   // Sort rows by distance
   rows.sort((a, b) => distanceSq(a[1], a[2]) - distanceSq(b[1], b[2]));
+
+
+  initCalendar(city,rows);
+
 
   const container = document.getElementById("cardsContainer");
   container.innerHTML = "";
@@ -175,7 +172,7 @@ async function showTab(c, push=true) {
     card.style.cursor = "pointer";
 
     card.className = "card";
-    card.append(img, Object.assign(document.createElement("h3"), {textContent: typeIcons[row[3]] + " " + name}));
+    card.append(img, Object.assign(document.createElement("h3"), {textContent: Constants.typeIcons[row[3]] + " " + name}));
     container.appendChild(card);
 
     card.addEventListener("click", () => showPlace(name, city));
@@ -183,7 +180,7 @@ async function showTab(c, push=true) {
   }
 }
 
-async function showPlace(placeName, city, push=true) {
+export async function showPlace(placeName, city, push=true) {
   if(push) {
     window.history.pushState({ type: "place", city, placeName }, placeName, `?city=${city}&place=${placeName}`);
   }
@@ -237,14 +234,7 @@ async function showPlace(placeName, city, push=true) {
 }
 /* Map user names to emojis */
 function getUserEmoji(user) {
-  const map = {
-    "Sachin": "🥷",
-    "Neeraja": "😤",
-    "Dheeraj": "🤠",
-    "Dyuti": "👩‍🦳",
-    "Rohit": "😎"
-  };
-  return map[user] || "👤";
+  return Constants.userMap[user] || "👤";
 }
 
 async function savePlace(e) {
@@ -253,7 +243,7 @@ async function savePlace(e) {
   msg.textContent = "⏳ Saving...";
 
   try {
-    const r = await fetch(APP_URL, {
+    const r = await fetch(Constants.APP_URL, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({

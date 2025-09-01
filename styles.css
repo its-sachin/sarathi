@@ -20,6 +20,12 @@ body {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+.heading2 {
+  padding: 1rem;
+  font-size: clamp(0.75rem, 3vw, 1.5rem);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 
 .tabs {
   position: sticky;
@@ -167,6 +173,16 @@ form button { flex: 1; }
     text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
 }
 
+#cardsContainer {
+  margin: 0 auto;         /* horizontally center */
+  padding: 1rem;          /* space inside */
+  display: flex;
+  flex-wrap: wrap;        /* allow multiple rows */
+  gap: 1rem;              /* space between cards */
+  justify-content: center; /* center cards inside container */
+}
+
+
 .card {
   width: 280px;
   border: 1px solid #ddd;
@@ -298,6 +314,150 @@ form button { flex: 1; }
   font-size:18px; 
   padding:2px 8px;
 }
+
+/* Calendar container */
+#tripCalendar {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  /* padding: 1.5rem; */
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid #3498dbe0;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
+}
+
+/* Calendar header panel */
+.fc-toolbar {
+  background: #3498dbe0; /* full blue background */
+  padding: 1rem;
+  border-radius: 12px 12px 0 0; /* rounded top corners */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+}
+
+/* Calendar title */
+.fc-toolbar-title {
+  color: #fff;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+
+/* Events */
+.fc-event {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  border: none;
+  border-radius: 0.8rem;
+  color: #fff;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.fc-event:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.fc-event .fc-event-title {
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+/* --- Modal (add place) --- */
+#tripModal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.35);
+  z-index: 1000;
+  backdrop-filter: blur(3px);
+  transition: opacity 0.3s ease;
+}
+
+#tripModal > div {
+  background: var(--card-bg);
+  padding: 1.5em;
+  border-radius: 12px;
+  min-width: 260px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  transition: transform 0.3s ease;
+}
+
+#tripModal select {
+  width: 100%;
+  padding: 0.6em;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+/* --- Popup (event options) --- */
+#eventPopup {
+  display: none;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--card-bg);
+  padding: 1.5em;
+  border-radius: 12px;
+  text-align: center;
+  z-index: 1000;
+  min-width: 260px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* --- Buttons (shared for modal + popup) --- */
+#tripModal button,
+#eventPopup button {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+#tripModal button:hover,
+#eventPopup button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.12);
+}
+
+#tripModal button:last-child,
+#eventPopup button:last-child {
+  background: #eee;
+  color: #222;
+}
+
+#tripModal button:last-child:hover,
+#eventPopup button:last-child:hover {
+  background: #ddd;
+}
+
+
 /* --- Responsive for mobile --- */
 @media (max-width: 1200px) {
 
@@ -305,6 +465,11 @@ form button { flex: 1; }
   .heading {
     font-size: clamp(3rem, 5vw, 5rem);
   }
+
+  .heading2 {
+    font-size: clamp(2rem, 4vw,3rem);
+  }
+
 
   html { font-size: 20px; }
 
@@ -402,4 +567,68 @@ form button { flex: 1; }
     border-radius: 6px;
   }
 
+  /* Calendar container */
+  #tripCalendar {
+    max-width: 95%;
+    margin: 1rem auto;
+    border-radius: 20px;
+  }
+
+  /* Calendar header panel */
+  .fc-toolbar {
+    gap: 0.5rem;
+    padding: 1.2rem;
+    border-radius: 16px 16px 0 0;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+  }
+
+  /* Calendar title */
+  .fc-toolbar-title {
+    font-size: 10rem; /* slightly bigger for readability */
+    text-align: center;
+  }
+
+  /* Events */
+  .fc-event {
+    font-size: 1.5rem; /* bigger touch target */
+    padding: 0.6rem 1rem;
+    border-radius: 1rem;
+  }
+
+  .fc-timegrid-slot-label,
+  .fc-col-header-cell-cushion {
+    font-size: 1.7rem;  /* adjust bigger */
+    font-weight: 600;   /* optional: make it bold */
+  }
+
+  /* Modals and popups */
+  #tripModal > div,
+  #eventPopup {
+    min-width: 50%; /* fill most of the screen */
+    padding: 2em;   /* larger padding for easier interaction */
+    border-radius: 16px;
+    font-size: clamp(2.5rem, 4vw, 1.7rem);
+  }
+
+  #eventPopup button {
+    font-size: clamp(1.5rem, 4vw, 1.7rem); /* bigger, readable */
+    padding: clamp(0.8em, 2vw, 1.2em);
+    border-radius: 12px;
+    margin-top: 0.5em;
+  }
+
+  #tripModal select {
+    font-size: 2rem;
+    padding: 0.8em;
+  }
+
+  /* Buttons */
+  #tripModal button,
+  #eventPopup button {
+    font-size: 2rem;
+    padding: 0.8em 1.5em;
+    border-radius: 12px;
+  }
 }
+
