@@ -193,6 +193,10 @@ form button { flex: 1; }
   display: inline-block;
   text-align: center;
 }
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
 .card img {
   width: 100%;
   height: 200px;
@@ -379,6 +383,7 @@ form button { flex: 1; }
 }
 
 /* --- Modal (add place) --- */
+#eventPopup,
 #tripModal {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -391,6 +396,7 @@ form button { flex: 1; }
   transition: opacity 0.3s ease;
 }
 
+#eventPopup > div,
 #tripModal > div {
   background: var(--card-bg);
   padding: 1.5em;
@@ -409,25 +415,10 @@ form button { flex: 1; }
   font-size: 0.9rem;
 }
 
-/* --- Popup (event options) --- */
-#eventPopup {
-  display: none;
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: var(--card-bg);
-  padding: 1.5em;
-  border-radius: 12px;
-  text-align: center;
-  z-index: 1000;
-  min-width: 260px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
 
 /* --- Buttons (shared for modal + popup) --- */
-#tripModal button,
-#eventPopup button {
+#eventPopup button,
+#tripModal button{
   background: var(--primary-color);
   color: #fff;
   border: none;
@@ -439,21 +430,22 @@ form button { flex: 1; }
   box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
 
-#tripModal button:hover,
-#eventPopup button:hover {
+
+#eventPopup button:hover,
+#tripModal button:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 5px 10px rgba(0,0,0,0.12);
 }
 
-#tripModal button:last-child,
-#eventPopup button:last-child {
+#eventPopup button:last-child ,
+#tripModal button:last-child {
   background: #eee;
   color: #222;
 }
 
-#tripModal button:last-child:hover,
-#eventPopup button:last-child:hover {
+#eventPopup  button:last-child:hover,
+#tripModal button:last-child:hover{
   background: #ddd;
 }
 
@@ -603,29 +595,22 @@ form button { flex: 1; }
   }
 
   /* Modals and popups */
-  #tripModal > div,
-  #eventPopup {
+  #eventPopup > div,
+  #tripModal > div{
     min-width: 50%; /* fill most of the screen */
     padding: 2em;   /* larger padding for easier interaction */
     border-radius: 16px;
     font-size: clamp(2.5rem, 4vw, 1.7rem);
   }
-
-  #eventPopup button {
-    font-size: clamp(1.5rem, 4vw, 1.7rem); /* bigger, readable */
-    padding: clamp(0.8em, 2vw, 1.2em);
-    border-radius: 12px;
-    margin-top: 0.5em;
-  }
-
+  
   #tripModal select {
     font-size: 2rem;
     padding: 0.8em;
   }
 
   /* Buttons */
-  #tripModal button,
-  #eventPopup button {
+  #eventPopup button,
+  #tripModal button {
     font-size: 2rem;
     padding: 0.8em 1.5em;
     border-radius: 12px;

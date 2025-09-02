@@ -53,16 +53,16 @@ export async function initCalendar(cityId, rows) {
 
   function showEventPopup(event) {
     popup.innerHTML = `
-      <div>
-        <h3>${event.title}</h3>
-        <div id="eventButton">
-          <button id="openEvent">Open</button>
-          <button id="deleteEvent">Delete</button>
-          <button id="closePopup">Cancel</button>
-        </div>
+    <div>
+      <h3>${event.title}</h3>
+      <div style="margin-top:1em;display:flex;gap:1em;justify-content:center">
+        <button id="openEvent">Open</button>
+        <button id="deleteEvent">Delete</button>
+        <button id="closePopup">Cancel</button>
       </div>
+    </div>
     `;
-    popup.style.display = "block";
+    popup.style.display = "flex";
 
     popup.querySelector("#openEvent").onclick = () => {
       const placeId = event.extendedProps.value;
@@ -134,7 +134,7 @@ export async function initCalendar(cityId, rows) {
     },
     validRange: {
       start: trip.arrival,
-      end: new Date(new Date(trip.departure).getTime() + 86400000)
+      end: new Date(new Date(trip.departure).getTime() + 24*60*60)
     },
     initialDate: trip.arrival,
     editable: true,
@@ -146,7 +146,6 @@ export async function initCalendar(cityId, rows) {
     eventLongPressDelay: 300,
     selectLongPressDelay: 300,
     height: "auto",
-    
 
     dateClick: (info) => {
       modelSelection(info);

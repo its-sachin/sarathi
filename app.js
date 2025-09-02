@@ -126,13 +126,12 @@ async function showTab(c, push=true) {
      </form>
      <div id="msgBox"><span id=msg></span></div>
      
-
-     <div id="cardsContainer"></div>
-
-
      <!-- ✅ calendar container -->
      <h2 class = "heading2"> Scheduler </h3>
     <div id="tripCalendar" style="margin-top:20px;"></div>
+
+      <h2 class = "heading2"> Places </h3>
+     <div id="cardsContainer"></div>
 
     <h2 class = "heading2"> Map-View </h3>
      <div id="map-container">
