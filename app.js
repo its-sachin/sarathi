@@ -48,6 +48,46 @@ async function initMap(city, rows, zoom=13) {
   map = L.map('map', mapOptions);
   map = map.setView(center, zoom);
 
+  // ⤢ Add fullscreen button once
+  // ⤢ Add fullscreen button once
+  // ⤢ fullscreen toggle button (desktop + mobile safe)
+  // ⤢ fullscreen toggle button (CSS fullscreen + mobile drag toggle)
+  // ⤢ fullscreen toggle button (mobile safe + restore styles)
+  if (!document.getElementById("mapFullscreenBtn")) {
+    const btn = Object.assign(document.createElement("button"), {
+      id: "mapFullscreenBtn",
+      innerText: "⤢",
+    });
+    map._container.appendChild(btn);
+
+    let isFull = false, originalStyle = {};
+    btn.onclick = () => {
+      isFull = !isFull;
+
+      if (isFull) {
+        // save current styles
+        originalStyle = { 
+          position: map._container.style.position, 
+          top: map._container.style.top, 
+          left: map._container.style.left, 
+          width: map._container.style.width, 
+          height: map._container.style.height, 
+          zIndex: map._container.style.zIndex 
+        };
+        // apply fullscreen
+        Object.assign(map._container.style, { position:"fixed", top:0, left:0, width:"100vw", height:"100vh", zIndex:9999 });
+        map.dragging.enable();
+      } else {
+        // restore
+        Object.assign(map._container.style, originalStyle);
+        map.dragging.disable();
+      }
+
+      setTimeout(()=>map.invalidateSize(),300);
+    };
+  }
+
+
   if(!key) {
     key = await fetchMapKey();
   }
@@ -103,6 +143,7 @@ async function initMap(city, rows, zoom=13) {
 
   map.on('zoomend', updateLabels);
   updateLabels();
+  
 }
 
 async function showTab(c, push=true) {

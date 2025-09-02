@@ -79,6 +79,20 @@ main {
   box-sizing: border-box;
 }
 
+#mapFullscreenBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
 #form-container {
   width: 95%;
   max-width: 800px;
@@ -615,5 +629,12 @@ form button { flex: 1; }
     padding: 0.8em 1.5em;
     border-radius: 12px;
   }
+
+  #mapFullscreenBtn {
+    padding: 12px 12px;
+    font-size: 50px;
+    border-radius: 15px;
+  }
+
 }
 
