@@ -66,7 +66,6 @@ export async function initCalendar(cityId, rows) {
 
     popup.querySelector("#openEvent").onclick = () => {
       const placeId = event.extendedProps.value;
-      confirm(placeId);
       if (placeId) {
         showPlace(placeId, cityId);
       }
