@@ -335,7 +335,7 @@ form button { flex: 1; }
 
 /* Calendar container */
 #tripCalendar {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 1.5rem auto;
   /* padding: 1.5rem; */
   background: var(--card-bg);
@@ -343,6 +343,10 @@ form button { flex: 1; }
   border: 1px solid #3498dbe0;
   box-shadow: 0 6px 15px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
+}
+
+.fc {
+   max-width: 1600px; !important;
 }
 
 /* Calendar header panel */
@@ -395,6 +399,7 @@ form button { flex: 1; }
   word-break: break-word;
   line-height: 1.2;
 }
+
 
 /* --- Modal (add place) --- */
 #eventPopup,
