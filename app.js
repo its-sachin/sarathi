@@ -231,9 +231,20 @@ export async function showPlace(placeName, city, push=true) {
 
     // 🔹 Order users according to getUserEmoji map
     const userOrder = ["Sachin", "Rohit", "Neeraja", "Dheeraj", "Dyuti"];
-
     container.innerHTML = `
-      <h2 class="heading">${placeName}</h2>
+       <div class="placeHeader">
+        <h2 class="heading">${placeName}</h2>
+        <button 
+          class="mapsButton"
+          onclick="window.open(
+              'https://www.google.com/maps/search/?api=1&query=${placeName}-${city}',
+              '_blank'
+            )"
+          title="Open in Google Maps"
+        >
+          📍 Open in Maps
+        </button>
+      </div>
       <img class="imagePlace" src="${placeData['link']}">
       <div class="infoCardsContainer">
         ${userOrder

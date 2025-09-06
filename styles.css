@@ -346,7 +346,7 @@ form button { flex: 1; }
 }
 
 .fc {
-   max-width: 1600px; !important;
+   max-width: 1600px !important;
 }
 
 /* Calendar header panel */
@@ -399,7 +399,40 @@ form button { flex: 1; }
   word-break: break-word;
   line-height: 1.2;
 }
+.placeHeader {
+  position: relative; /* allows absolute positioning inside */
+  margin-bottom: 1rem;
+}
 
+.placeHeader .heading {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+  width: 100%;              /* spans full width */
+}
+
+.mapsButton {
+  position: absolute;
+  top: 50%;                  /* push to vertical middle */
+  right: 5px;                  /* stick to right */
+  transform: translateY(-50%); /* adjust back to perfect center */
+  
+  background: #4285f4;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out, transform 0.1s;
+}
+
+.mapsButton:hover {
+  background: #3367d6;
+}
+.mapsButton:active {
+  transform: translateY(-50%) scale(0.95);
+}
 
 /* --- Modal (add place) --- */
 #eventPopup,
@@ -639,6 +672,11 @@ form button { flex: 1; }
     padding: 12px 12px;
     font-size: 50px;
     border-radius: 15px;
+  }
+
+  .mapsButton {
+    font-size: 1.5rem;
+    padding: 0.4rem 0.8rem;
   }
 
 }
