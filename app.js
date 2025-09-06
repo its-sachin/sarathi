@@ -111,11 +111,13 @@ async function initMap(city, rows, zoom=13) {
 
     // Card HTML
     const popupContent = `
-      <div class="place-card" style="cursor:pointer; width:200px; text-align:center;">
-        <img src="${imgUrl}" alt="${name}" style="width:100%; height:120px; object-fit:cover; border-radius:6px;" />
-        <h4 style="margin:5px 0;">${name}</h4>
-        <p style="margin:0; color:#555;">${type}</p>
-      </div>
+      <a href="https://its-sachin.github.io/sarathi/?city=${city}&place=${name}" class="place-card-link" style="text-decoration:none; color:inherit;">
+        <div class="place-card" style="cursor:pointer; width:200px; text-align:center;">
+          <img src="${imgUrl}" alt="${name}" style="width:100%; height:120px; object-fit:cover; border-radius:6px;" />
+          <h4 style="margin:5px 0;">${name}</h4>
+          <p style="margin:0; color:#555;">${type}</p>
+        </div>
+      </a>
     `;
 
     const popup = L.popup({
@@ -129,8 +131,11 @@ async function initMap(city, rows, zoom=13) {
 
     // Navigate to page on click
     marker.on('popupopen', e => {
-      const card = e.popup.getElement().querySelector('.place-card');
-      card.onclick = () => showPlace(name, city);
+      const link = e.popup.getElement().querySelector('.place-card-link');
+      link.onclick = (event) => {
+        event.preventDefault();  // prevent normal navigation
+        showPlace(name, city);   // your existing function
+      };
     });
 
     return marker;

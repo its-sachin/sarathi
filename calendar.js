@@ -129,7 +129,7 @@ export async function initCalendar(cityId, rows) {
       timeGridFourDay: {
         type: 'timeGrid',
         duration: { days: 4 },
-        buttonText: '4 day'
+        buttonText: '4 day',
       }
     },
     validRange: {

@@ -19,13 +19,33 @@
 # # </script>
 
 # import csv, json, os
-# import firebase_admin
-# from firebase_admin import credentials, firestore
+import firebase_admin
+from firebase_admin import credentials, firestore
 
-# # Initialize Firebase Admin
-# cred = credentials.Certificate("../sarathi-291ca-firebase-adminsdk-fbsvc-b56b87568d.json")
-# firebase_admin.initialize_app(cred)
-# db = firestore.client()
+# Initialize Firebase Admin
+cred = credentials.Certificate("../sarathi-291ca-firebase-adminsdk-fbsvc-b56b87568d.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+USERS = ["Sachin", "Neeraja", "Dheeraj", "Dyuti"]
+PACKING_ITEMS = ["Passport", "Tickets", "Cash", "Suica Card", "Power Bank", "Clothes"]
+
+prep_ref = db.collection("prep").document("data")
+
+# Build default packing dict → each user has an empty list
+packing_data = {user: [] for user in USERS}
+
+# Default checklist (empty at start)
+checklist_data = []
+
+init_data = {
+    "packing": packing_data,
+    "checklist": checklist_data
+}
+
+# Write to Firestore (overwrites if exists)
+prep_ref.set(init_data)
+print("✅ Prep data initialized in Firestore!")
 
 # # Path to your local data
 # DATA_DIR = "./data"
@@ -60,19 +80,3 @@
 #                         "userId": user,
 #                         "data": data
 #                     })
-
-
-import requests
-
-def get_osm_place_id(place_name):
-    url = "https://nominatim.openstreetmap.org/search"
-    params = {"q": place_name, "format": "json"}
-    response = requests.get(url, params=params, headers={"User-Agent": "my-app"})
-    data = response.json()
-    if data:
-        return data[0]["osm_id"], data[0]["lat"], data[0]["lon"]
-    return None
-
-places = ["Tokyo Tower", "Senso-ji Temple", "Meiji Jingu Shrine"]
-for place in places:
-    print(place, "→", get_osm_place_id(place))
