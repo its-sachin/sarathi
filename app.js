@@ -157,6 +157,7 @@ async function showTab(c, push=true) {
     window.history.pushState({ type: "tab", city: c }, c, `?city=${c}`);
   }
 
+  document.title = c; // update title
   const rows = await fetchPlacesCSV(c);
   const opts = Object.keys(Constants.typeIcons)
     .map(v => `<option value="${v}">${Constants.typeIcons[v]} ${v}</option>`)
@@ -230,6 +231,7 @@ export async function showPlace(placeName, city, push=true) {
     window.history.pushState({ type: "place", city, placeName }, placeName, `?city=${city}&place=${placeName}`);
   }
   try {
+    document.title = placeName; 
     const placeData = await fetchPlaceContributions(city, placeName);
 
     const container = document.getElementById("cityTabs");
