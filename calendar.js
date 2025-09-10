@@ -146,6 +146,7 @@ export async function initCalendar(cityId, rows) {
     eventLongPressDelay: 300,
     selectLongPressDelay: 300,
     height: "auto",
+    timeZone: "Asia/Kolkata",
 
     dateClick: (info) => {
       modelSelection(info);
